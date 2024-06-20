@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top up balance</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<%- include('partials/header', { user: user }); -%>
+
+<h1 id="h1_bal">Top up balance</h1>
+<form id="top-up-form">
+    <label for="amount">Deposit:</label>
+    <input type="number" id="amount" name="amount" required>
+    <button type="submit">Top Up</button>
+</form>
+
+<script>
+$(document).ready(function() {
+  $('#top-up-form').submit(function(event) {
+    event.preventDefault();
+
+    const amount = $('#amount').val();
+    console.log(`Sending amount: ${amount}`);
+
+    $.ajax({
+      url: '/top-up',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ amount }),
+      success: function(response) {
+        // Оновити баланс в заголовку
+        $('#headBal').text('Balance: ' + response.balance + ' USD');
+        $('#amount').val('');
+      },
+      error: function(xhr) {
+        console.error('Помилка поповнення балансу:', xhr.responseText);
+        alert('Помилка поповнення балансу');
+      }
+    });
+  });
+});
+</script>
+
+<%- include('partials/footer'); -%>
+</body>
+</html>
